@@ -16,9 +16,10 @@ function buoyancy.do_buoyancy(boat)
    --remove voxels above water level
    local voxels = simGetOctreeVoxels(submerged_volume)
    local to_remove = {}
-   local dz = simGetSimulationTimeStep()/2*linVel[3]
+   local dt = simGetSimulationTimeStep()
+   local dz = dt*linVel[3]
    for i = 3,table.getn(voxels),3 do
-      if voxels[i]+water_level> 0 then
+      if (voxels[i]+dz)+water_level> 0 then
 	 to_remove[#to_remove+1] = voxels[i-2]
 	 to_remove[#to_remove+1] = voxels[i-1]
 	 to_remove[#to_remove+1] = voxels[i]
@@ -46,19 +47,23 @@ function buoyancy.do_buoyancy(boat)
 	 --calculate buoyant force and transform it to correct reference frame
 	 local om = simGetObjectMatrix(boat,-1)
 	 local mass, inertia, cm = simGetShapeMassAndInertia(shape,om)
-	 local im = simInvertMatrix(om)
+	 om[4] = 0
+	 om[8] = 0
+	 om[12]= 0
+	 simInvertMatrix(om)
 	 local force = {0,0,mass*9.81};
 	 local appliedForce = simMultiplyVector(om,force)
          --apply forces to boat
          simAddForce(boat,cm,appliedForce)
+	 --simAddForceAndTorque(boat,force)
          --setup graph and plot debug data 
 	 simHandleGraph(graph_handle,simGetSimulationTime()+simGetSimulationTimeStep())
 	 simSetGraphUserData(graph_handle,"cm_x",cm[1])
 	 simSetGraphUserData(graph_handle,"cm_y",cm[2])
 	 simSetGraphUserData(graph_handle,"cm_z",cm[3])
-	 simSetGraphUserData(graph_handle,"f_x",appliedForce[1]/9.81/mass)
-	 simSetGraphUserData(graph_handle,"f_y",appliedForce[2]/9.81/mass)
-	 simSetGraphUserData(graph_handle,"f_z",appliedForce[3]/9.81/mass)
+	 simSetGraphUserData(graph_handle,"f_x",appliedForce[1]/9.81/mass/20)
+	 simSetGraphUserData(graph_handle,"f_y",appliedForce[2]/9.81/mass/20)
+	 simSetGraphUserData(graph_handle,"f_z",appliedForce[3]/9.81/mass/20)
       end
    end
 end
