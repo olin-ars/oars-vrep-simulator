@@ -1,6 +1,6 @@
 local ros = {}
 
-function ros.init("")
+function ros.init()
    moduleName=0
    moduleVersion=0
    index=0
@@ -17,12 +17,13 @@ function ros.init("")
       local sysTime=simGetSystemTimeInMs(-1) 
       local cameraTopicName='camera/image_raw'
       local simulationTimeTopicName='simTime'
-      local velocityTopicName='vel_cmd'
       local lidarTopicName='lidar/scan'
       local gpsTopicName = 'gps/fix'
       local imuTopicName='imu'
       local proximityTopicName='proximity/range'
       local proximitySensorCount=5
+      local motorTopicName='motor'
+      local motorCount=4
 
       -- Prepare the sensor publisher and the motor speed subscribers:
       cameraPub=simExtRosInterface_advertise('/'..cameraTopicName,'sensor_msgs/Image')
@@ -32,9 +33,14 @@ function ros.init("")
       gpsPub=simExtRosInterface_advertise('/'..gpsTopicName,'sensor_msgs/NavSatFix')
       proximityPub = {}
       for sensorNum=1,proximitySensorCount do
-	 proximityPub[i]=simExtRosInterface_advertise('/'..proximityTopicName..sensorNum,'sensor_msgs/Range')
+	 proximityPub[sensorNum]=simExtRosInterface_advertise('/'..proximityTopicName..sensorNum,'sensor_msgs/Range')
       end
-      velocitySub=simExtRosInterface_subscribe('/'..velocityTopicName,'std_msgs/Float32','setVelocity_cb')
+      motorSub={}
+      for motorNum=1,motorCount do
+	 motorSub[motorNum]=simExtRosInterface_subscribe('/'..motorTopicName..motorNum,'std_msgs/Float32','motor'..motorNum..'_cb')
+      end
       simExtRosInterface_publisherTreatUInt8ArrayAsString(cameraPub)
    end
 end
+
+return ros
