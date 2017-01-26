@@ -14,3 +14,13 @@ export VREP_ROOT=<PATH-TO-V-REP>```
 
 ## Troubleshooting
 * If you have opencv2 not being found install `libopencv-dev`
+
+
+## Motor Setup
+
+1 /    \ 2
+ +------+
+ |      |
+ |/    \|
+ +------+
+3        4
