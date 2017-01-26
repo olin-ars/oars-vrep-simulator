@@ -18,9 +18,11 @@ export VREP_ROOT=<PATH-TO-V-REP>```
 
 ## Motor Setup
 
+```
 1 /    \ 2
  +------+
  |      |
  |/    \|
  +------+
 3        4
+```
