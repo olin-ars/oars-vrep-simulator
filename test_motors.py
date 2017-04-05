@@ -13,10 +13,10 @@ def motor_driver():
     while not rospy.is_shutdown():
         #for pub in motor_pubs:
         #    pub.publish(100)
-        motor_pubs[0].publish(math.sin(t/10.0)*5)
-        motor_pubs[1].publish(math.sin(t/10.0)*5)
-        motor_pubs[2].publish(math.sin(t/10.0)*5)
-        motor_pubs[3].publish(math.sin(t/10.0)*5)        
+        motor_pubs[0].publish(math.sin(t/10.0))
+        motor_pubs[1].publish(math.sin(t/10.0))
+        motor_pubs[2].publish(math.sin(t/10.0))
+        motor_pubs[3].publish(math.sin(t/10.0))        
         t = t+1
         rate.sleep()
 
